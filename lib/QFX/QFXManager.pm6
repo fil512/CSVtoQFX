@@ -1,5 +1,6 @@
 use XML;
 use QFX::QFXDocument;
+use QFX::QFXPosition;
 
 class QFXManager {
 	has QFXDocument $.doc;
@@ -13,6 +14,7 @@ class QFXManager {
 	
 	method clearPositions() {
 		self!clearNode("INVPOSLIST");
+		self!clearNode("SECLIST");
 	}
 	
 	method !clearNode(Str $nodename) {
@@ -23,23 +25,24 @@ class QFXManager {
 		
 	}
 	
-	method addInstrument(Str $nodename, Str $uniqueId, Str $units, Str $unitPrice, Str $mktVal, Str $date) {
+	method addPosition(QFXPosition $pos) {
 		my $posList = self!findNode("INVPOSLIST");
-		$posList.append($nodename, qq :to 'EOT');
-<INVPOS>
+		$posList.append($pos.posType(), $pos.toPositionXML());
+		my $secList = self!findNode("SECLIST");
+		$secList.append($pos.secType(), $pos.toSecInfoXML());
+	}
+	
+	method addDummy() {
+		my $secList = self!findNode("SECLIST");
+		$secList.append("STOCKINFO", qq :to 'EOT');
+<SECINFO>
 	<SECID>
-		<UNIQUEID>{$uniqueId}</UNIQUEID>
+		<UNIQUEID>DUMMY_SECURITY</UNIQUEID>
 		<UNIQUEIDTYPE>ISM_SEC_ID</UNIQUEIDTYPE>
 	</SECID>
-	<HELDINACCT>CASH</HELDINACCT>
-	<POSTYPE>LONG</POSTYPE>
-	<UNITS>{$units}</UNITS>
-	<UNITPRICE>{$unitPrice}</UNITPRICE>
-	<MKTVAL>{$mktVal}</MKTVAL>
-	<DTPRICEASOF>{$date}</DTPRICEASOF>
-</INVPOS>
+	<SECNAME>Sample security</SECNAME>
+</SECINFO>
 EOT
-
 	}
 
 	method !findNode(Str $nodename) {

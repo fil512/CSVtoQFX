@@ -6,6 +6,7 @@ plan 0;
 use QFX::QFXDocument;
 use QFX::QFXWriter;
 use QFX::QFXManager;
+use QFX::QFXPosition;
 
 my $doc = QFXDocument.new();
 $doc.parsefile('t/data/from-bank-feb.qfx');
@@ -28,12 +29,45 @@ sub transform(QFXManager $mgr) {
 	$mgr.setTextNode("AVAILCASH", "0.00");
 	
 	$mgr.clearPositions();
-	$mgr.addInstrument("POSSTOCK", "354855", "54", "74.65", "4031.11", $date);
-	$mgr.addInstrument("POSSTOCK", "399747", "487", "20.91", "10183.17", $date);
-	$mgr.addInstrument("POSSTOCK", "594671", "26", "207.07", "5383.86", $date);
-	$mgr.addInstrument("POSSTOCK", "706569", "27", "83.60", "2257.27", $date);
-	$mgr.addInstrument("POSSTOCK", "706673", "77", "45.85", "3530.68", $date);
-
-	$mgr.addInstrument("POSMF", "994875", "1.987", "10.00", "19.87", $date);
-
+	$mgr.addPosition(QFXPosition.new(
+		instrument => QFXStock.new(uniqueId => "354855", secName => "ISHARES MSCI EAFE     ETF", ticker => "EFA"),
+		units => "54",
+		unitPrice => "74.65",
+		mktVal => "4031.11",
+		date => $date));
+	$mgr.addPosition(QFXPosition.new(
+		instrument => QFXStock.new(uniqueId => "399747", secName => "ISHARES S&amp;P/TSX60 IDX ETF", ticker => "XIU"),
+		units => "487",
+		unitPrice => "20.91",
+		mktVal => "10183.17",
+		date => $date));
+	$mgr.addPosition(QFXPosition.new(
+		instrument => QFXStock.new(uniqueId => "594671", secName => "SPDR S&amp;P 500 ETF", ticker => "SPY"),
+		units => "26",
+		unitPrice => "207.07",
+		mktVal => "5383.86",
+		date => $date));
+	$mgr.addPosition(QFXPosition.new(
+		instrument => QFXStock.new(uniqueId => "706569", secName => "VANGUARD DIV APPR ETF", ticker => "VIG"),
+		units => "27",
+		unitPrice => "83.60",
+		mktVal => "2257.27",
+		date => $date));
+	$mgr.addPosition(QFXPosition.new(
+		instrument => QFXStock.new(uniqueId => "706673", secName => "VANGUARD FTSE DEV MKT ETF", ticker => "VEA"),
+		units => "77",
+		unitPrice => "45.85",
+		mktVal => "3530.68",
+		date => $date));
+	my $RBCMutFund = QFXMutualFund.new(uniqueId => "994875",
+		secName => "RBC INV S/A-F    /NL'FRAC",
+		ticker => "RBF2011",
+		portions => QFXPortion.new(assetClass => "MONEYMRKT", percent => "100"));
+	$mgr.addPosition(QFXPosition.new(
+		instrument => $RBCMutFund,
+		units => "1.987",
+		unitPrice => "10.00",
+		mktVal => "19.87",
+		date => $date));
+	$mgr.addDummy();
 }

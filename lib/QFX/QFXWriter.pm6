@@ -33,29 +33,33 @@ class QFXActions {
 class QFXWriter {
 	has QFXDocument $.doc;
 	
+	method Str {
+		self!keysStr ~ self!OFX;
+	}
+	
 	method write(Str $filename) {
 		my $output = open $filename, :w;
-		self!writeKeys($output);
-		self!writeXML($output);
+		say $output: ~self;
 		close $output;
 	}
 
-	method !writeKeys($output) {
+	method !keysStr {
+		my $retval;
 		for @($.doc.parsed<keyval>) -> $kv {
-			say $output: "$kv<key>:$kv<val>";
+			$retval ~= "$kv<key>:$kv<val>\n";
 		}
 	}
 	
-	method !writeXML($output) {
+	method !OFX {
 		my $xmlstr = self!format(~$.doc.xml);
 
 		$xmlstr.=subst(/\<INTU_BID\>/, "<INTU.BID>");
 		$xmlstr.=subst(/\<\/INTU_BID\>/, "</INTU.BID>");
-		say $output: $xmlstr;
+		$xmlstr;
 	}
 
 	method !format(Str $xml) {
-		my $actions = QFXActions.new();
+		my $actions = QFXActions.new;
 		my $parsed = QFXXML.parse($xml, :$actions);
 		$actions.outstring;
 	}

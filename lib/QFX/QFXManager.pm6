@@ -1,38 +1,56 @@
 use XML;
 use QFX::QFXDocument;
 use QFX::QFXPosition;
+use QFX::QFXStatement;
 
 class QFXManager {
 	has QFXDocument $.doc;
 	
-	method setTextNode(Str $nodename, Str $newval) {
+	method setStatement(QFXStatement $statement) {
+		self!setTextNode("DTSERVER", $statement.date);
+		self!setTextNode("TRNUID", $statement.trnuid);
+		self!setTextNode("DTASOF", $statement.date ~ "120000");
+		self!setTextNode("DTSTART", $statement.date);
+		self!setTextNode("DTEND", $statement.date);
+		self!setTextNode("FITID", $statement.fitid);
+		self!setTextNode("DTTRADE", $statement.date);
+		self!setTextNode("AVAILCASH", $statement.availCash);
+	
+		self!clearPositions;
+		for $statement.positions -> $position {
+			self!addPosition($position);
+		}
+		self!addDummy;
+	}
+	
+	method !setTextNode(Str $nodename, Str $newval) {
 		my $element = self!findNode($nodename);
-		my $existing = $element.firstChild();
+		my $existing = $element.firstChild;
 		my $new = XML::Text.new(text => $newval);
 		$element.replace($existing, $new);
 	}
 	
-	method clearPositions() {
+	method !clearPositions {
 		self!clearNode("INVPOSLIST");
 		self!clearNode("SECLIST");
 	}
 	
 	method !clearNode(Str $nodename) {
 		my $element = self!findNode($nodename);
-		while (my $child = $element.firstChild()) {
+		while (my $child = $element.firstChild) {
 			$element.removeChild($child);
 		}
 		
 	}
 	
-	method addPosition(QFXPosition $pos) {
+	method !addPosition(QFXPosition $pos) {
 		my $posList = self!findNode("INVPOSLIST");
-		$posList.append($pos.posType(), $pos.toPositionXML());
+		$posList.append($pos.posType, $pos.toPositionXML);
 		my $secList = self!findNode("SECLIST");
-		$secList.append($pos.secType(), $pos.toSecInfoXML());
+		$secList.append($pos.secType, $pos.toSecInfoXML);
 	}
 	
-	method addDummy() {
+	method !addDummy {
 		my $secList = self!findNode("SECLIST");
 		$secList.append("STOCKINFO", qq :to 'EOT');
 <SECINFO>

@@ -29,15 +29,15 @@ class QFXPosition {
 	has Str $.mktVal;
 	has Str $.date;
 	
-	method posType() {
+	method posType {
 		$.instrument.posType;
 	}
 	
-	method secType() {
+	method secType {
 		$.instrument.secType;
 	}
 	
-	method toPositionXML() {
+	method toPositionXML {
 		qq :to 'EOT';
 <INVPOS>
 	<SECID>
@@ -54,7 +54,7 @@ class QFXPosition {
 EOT
 	}
 
-	method toSecInfoXML() {
+	method toSecInfoXML {
 		my $retval = qq :to 'EOT';
 <SECINFO>
 	<SECID>

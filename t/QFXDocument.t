@@ -5,8 +5,9 @@ plan 9;
 
 use QFX::QFXDocument;
 use QFX::QFXManager;
+use XML;
 
-my $doc = QFXDocument.new();
+my $doc = QFXDocument.new;
 $doc.parsefile('t/data/from-bank-feb.qfx');
 my $parsed = $doc.parsed;
 
@@ -27,12 +28,12 @@ my @dtserver = $xml.getElementsByTagName("DTSERVER");
 
 is @dtserver.elems, 1, "only one dt server element";
 
-my $dtServerVal = @dtserver[0].firstChild();
+my $dtServerVal = @dtserver[0].firstChild;
 is $dtServerVal, 20140213, "date value";
 
 my $mgr = QFXManager.new(doc => $doc);
 my $newdate = "20150201";
-$mgr.setTextNode("DTSERVER", $newdate);
+$mgr.^private_method_table<setTextNode>($mgr, "DTSERVER", $newdate);
 
-$dtServerVal = @dtserver[0].firstChild();
+$dtServerVal = @dtserver[0].firstChild;
 is $dtServerVal, $newdate, "new date value";

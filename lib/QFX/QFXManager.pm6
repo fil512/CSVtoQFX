@@ -8,11 +8,13 @@ class QFXManager {
 	
 	method setStatement(QFXStatement $statement) {
 		self!setTextNode("DTSERVER", $statement.date);
+		self!setTextNode("BROKERID", $statement.brokerid);
+		self!setTextNode("ACCTID", $statement.acctid);
 		self!setTextNode("TRNUID", $statement.trnuid);
 		self!setTextNode("DTASOF", $statement.date ~ "120000");
 		self!setTextNode("DTSTART", $statement.date);
 		self!setTextNode("DTEND", $statement.date);
-		self!setTextNode("FITID", $statement.fitid);
+		self!setTextNode("FITID", $statement.trnuid);
 		self!setTextNode("DTTRADE", $statement.date);
 		self!setTextNode("AVAILCASH", $statement.availCash);
 	
@@ -45,7 +47,7 @@ class QFXManager {
 	
 	method !addPosition(QFXPosition $pos) {
 		my $posList = self!findNode("INVPOSLIST");
-		$posList.append($pos.posType, $pos.toPositionXML);
+		$posList.append($pos.posType(), $pos.toPositionXML);
 		my $secList = self!findNode("SECLIST");
 		$secList.append($pos.secType, $pos.toSecInfoXML);
 	}

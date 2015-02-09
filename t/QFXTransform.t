@@ -33,9 +33,7 @@ sub transform(QFXManager $mgr) {
 	my $statement = QFXStatement.new(
 		date => $date,
 		trnuid => "1398454374947",
-		fitid => "1398454374947",
 		availCash => "0.00"
-		
 	);
 	
 	$statement.addPosition(QFXPosition.new(

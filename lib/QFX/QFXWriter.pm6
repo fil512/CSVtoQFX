@@ -48,6 +48,7 @@ class QFXWriter {
 		for @($.doc.parsed<keyval>) -> $kv {
 			$retval ~= "$kv<key>:$kv<val>\n";
 		}
+		$retval;
 	}
 	
 	method !OFX {

@@ -36,6 +36,10 @@ class QFXFileProcessor {
     my $doc = QFXDocument.new;
     $doc.parsefile($.template);
     my $mgr = QFXManager.new(doc => $doc);
+    if (@records.elems < 1) {
+      say "No records to process.  Skipping...";
+      return;
+    }
     $mgr.setStatement(self!process(@records));
 
     my $writer = QFXWriter.new( doc => $doc );

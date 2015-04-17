@@ -24,14 +24,15 @@ $writer.write($OUTPUT);
 
 my $outputStr = $writer.Str.subst(/\s/, '', :g);
 my $compare = (slurp $COMPARE).subst(/\s/, '', :g);
-
-ok $outputStr cmp $compare;
+ok $outputStr eq $compare;
 
 sub transform(QFXManager $mgr) {
 	my $date = "20140425";
 	
 	my $statement = QFXStatement.new(
 		date => $date,
+		acctid => "6K1046S",
+		brokerid => "td.com",
 		trnuid => "1398454374947",
 		availCash => "0.00"
 	);
